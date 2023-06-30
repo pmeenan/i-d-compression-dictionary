@@ -10,7 +10,7 @@ submissiontype: independent  # also: "IETF", "IAB", or "IRTF"
 number:
 date:
 #consensus: true
-v: 0
+v: 1
 area: "Applications and Real-Time"
 workgroup: "HTTP"
 keyword:
@@ -44,6 +44,7 @@ informative:
   Origin: RFC6454
   RFC3986:
   RFC8941:
+  RFC4648:
 
 --- abstract
 
@@ -148,12 +149,15 @@ to the request to indicate to the server that it has a dictionary available to
 use for compression.
 
 The "Sec-Available-Dictionary" request header is a Structured Field {{RFC8941}}
-sf-string value that contains the hash of the contents of a single available
-dictionary calculated using one of the algorithms advertised as being supported
-by the server.
+sf-string value that contains a Base16-encoded {{RFC4648}} hash of the contents
+of a single available dictionary calculated using one of the algorithms
+advertised as being supported by the server.
 
 The client MUST only send a single "Sec-Available-Dictionary" request header
 with a single hash value for the best available match that it has available.
+
+For example:
+Sec-Available-Dictionary: A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E
 
 ### Dictionary freshness requirement
 
@@ -248,11 +252,11 @@ Content-Encoding: br-d
 IANA will add the following entries to the "HTTP Content Coding Registry"
 within the "Hypertext Transfer Protocol (HTTP) Parameters" registry:
 
-Name: sbr
+Name: br-d
 Description: A stream of bytes compressed using the Brotli protocol with an
 external dictionary
 
-Name: szstd
+Name: zstd-d
 Description: A stream of bytes compressed using the Zstandard protocol with
 an external dictionary
 
