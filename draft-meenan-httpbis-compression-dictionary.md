@@ -10,7 +10,7 @@ submissiontype: independent  # also: "IETF", "IAB", or "IRTF"
 number:
 date:
 #consensus: true
-v: 1
+v: 2
 area: "Applications and Real-Time"
 workgroup: "HTTP"
 keyword:
