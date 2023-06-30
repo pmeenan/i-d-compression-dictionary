@@ -5,11 +5,11 @@ title: Compression Dictionary Transport
 abbrev: compression-dictionary
 category: info
 
-docname: draft-meenan-httpbis-compression-dictionary-latest
-submissiontype: IETF  # also: "independent", "IAB", or "IRTF"
+docname: draft-meenan-compression-dictionary-latest
+submissiontype: independent  # also: "IETF", "IAB", or "IRTF"
 number:
 date:
-consensus: true
+#consensus: true
 v: 0
 area: "Applications and Real-Time"
 workgroup: "HTTP"
@@ -23,7 +23,7 @@ venue:
   mail: "ietf-http-wg@w3.org"
   arch: "https://lists.w3.org/Archives/Public/ietf-http-wg/"
   github: "pmeenan/i-d-compression-dictionary"
-  latest: "https://pmeenan.github.io/i-d-compression-dictionary/draft-meenan-httpbis-compression-dictionary.html"
+  latest: "https://pmeenan.github.io/i-d-compression-dictionary/draft-meenan-compression-dictionary.html"
 
 author:
   -
@@ -41,6 +41,8 @@ informative:
   Brotli: RFC7932
   Zstandard: RFC8878
   HTTP: RFC7230
+  Origin: RFC6454
+  RFC3986:
   RFC8941:
 
 --- abstract
@@ -70,27 +72,29 @@ be used as a dictionary for future requests for URLs that match the pattern
 specified in the Use-As-Dictionary response header.
 
 The Use-As-Dictionary response header is a Structured Field {{RFC8941}}
-sf-dictionary with values for "match", "expires" and "algorithms".
+sf-dictionary with values for "match", "ttl" and "hashes".
 
 ### match
 
 The "match" value of the Use-As-Dictionary header is a sf-string value that
 provides an URL-matching pattern for requests where the dictionary can be used.
 
-The sf-string is parsed as a URL (https://url.spec.whatwg.org/), including
-support for parsing URLs relative to the request that provided the
-Use-As-Dictionary response. When stored, any relative URLs MUST be expanded
+The sf-string is parsed as a URL {{RFC3986}}, and supports absolute URLs
+as well as relative URLs. When stored, any relative URLs MUST be expanded
 so that only absolute URL patterns are used for matching against requests.
 
-The URL supports using * as a wildcard for pattern-matching multiple URLs.
+The match URL supports using * as a wildcard within the match string for
+pattern-matching multiple URLs. URLs with a natural * in them are not directly
+supported unless they can rely on the behavior of * matching an arbitrary
+string.
 
 The "match" value is required and MUST be included in the Use-As-Dictionary
 sf-dictionary for the dictionary to be considered valid.
 
-### expires
+### ttl
 
-The "expires" value of the Use-As-Dictionary header is a sf-integer value that
-provides the time in seconds that the dictionary is valid for.
+The "ttl" value of the Use-As-Dictionary header is a sf-integer value that
+provides the time in seconds that the dictionary is valid for (time to live).
 
 This is independent of the cache lifetime of the resource being used for the
 dictionary. If the underlying resource is evicted from cache then it is also
@@ -101,18 +105,18 @@ fetching updates of the expired resource. It can also be useful to artificially
 limit the life of a dictionary in cases where the dictionary is updated
 frequently, to limit the number of possible incoming dictionary values.
 
-The "expires" value is optional and defaults to 31536000 (1 year).
+The "ttl" value is optional and defaults to 31536000 (1 year).
 
-### algorithms
+### hashes
 
-The "algorithms" value of the Use-As-Dictionary header is a inner-list value
+The "hashes" value of the Use-As-Dictionary header is a inner-list value
 that provides a list of supported hash algorithms in order of server
 preference.
 
 The dictionaries are identified by the hash of their contents and this value
 allows for negotiation of the algorithm to use.
 
-The "algorithms" value is optional and defaults to (sha-256).
+The "hashes" value is optional and defaults to (sha-256).
 
 ### Examples
 
@@ -120,12 +124,12 @@ The "algorithms" value is optional and defaults to (sha-256).
 
 A response that contained a response header:
 
-Use-As-Dictionary: match="/product/*", expires=604800, algorithms=(sha-256 sha-512)
+Use-As-Dictionary: match="/product/*", ttl=604800, hashes=(sha-256 sha-512)
 
 Would specify matching any URL with a path prefix of /product/ on the same
-origin as the original request, expiring as a dictionary in 7 days independent
-of the cache lifetime of the resource, and advertise support for both sha-256
-and sha-512 hash algorithms.
+{{Origin}} as the original request, expiring as a dictionary in 7 days
+independent of the cache lifetime of the resource, and advertise support for
+both sha-256 and sha-512 hash algorithms.
 
 #### Versioned Directories
 
@@ -148,6 +152,18 @@ sf-string value that contains the hash of the contents of a single available
 dictionary calculated using one of the algorithms advertised as being supported
 by the server.
 
+The client MUST only send a single "Sec-Available-Dictionary" request header
+with a single hash value for the best available match that it has available.
+
+### Dictionary freshness requirement
+
+To be considered as a match, the dictionary must not yet be expired as a
+dictionary. When iterating through dictionaries looking for a match, the
+expiration time of the dictionary is calculated by taking the last time the
+dictionary was written and adding the "ttl" seconds from the
+"Use-As-Dictionary" response. If the current time is beyond the expiration time
+of the dictionary, it MUST be ignored.
+
 ### Dictionary URL matching
 
 When a dictionary is stored as a result of a "Use-As-Dictionary" directive, it
@@ -156,14 +172,44 @@ dictionary can be used for.
 
 When comparing request URLs to the available dictionary match patterns, the
 comparison should account for the * wildcard when matching against request
-URLs. This can be done using regex matching (escape all characters except
-for * and replace * with .* to build an appropriate regex).
+URLs. This can be accomplished with the following algorithm which returns TRUE
+for a successful match and FALSE for no-match:
 
-To be considered as a match, the dictionary must not yet be expired as a
-dictionary.
+1. Let MATCH represent the absolute URL pattern from the "match" value for the
+given dictionary.
+2. LET URL represent the request URL being checked.
+3. If there are no * characters in MATCH:
+  a. If the MATCH and URL strings are identical, return TRUE.
+  b. Else, return FALSE.
+4. If there is a single * character in MATCH and it is at the end of the
+   string:
+  a. If the MATCH string is identical to the start of the URL string, return
+     TRUE.
+  b. Else, return FALSE.
+5. Split the MATCH string by the * character into an array of MATCHES
+   (excluding the * deliminator from the individual entries).
+6. Pop the first entry in MATCHES from the front of the array into PATTERN.
+  a. If PATTERN is identical to the start of the URL string, remove the
+     beginning of the URL string until the end of the match to PATTERN.
+  b. Else, return FALSE.
+7. If there is not a * character at the end of MATCH:
+  a. Pop the last entry in MATCHES from the end of the array into PATTERN.
+  b. If PATTERN is identical to the end of the URL string, remove the end of
+     the URL string to the beginning of the match to PATTERN.
+  c. Else, return FALSE.
+8. Pop each entry off of the front of the MATCHES array into PATTERN. For
+   each PATTERN, in order:
+  a. Search for PATTERN in URL from the beginning of URL and stop at the first
+     match.
+  b. If no match is found, return FALSE.
+  c. Remove the beginning of the URL string until the end of the match to the
+     first occurrence of PATTERN.
+9. Return TRUE.
+
+### Multiple matching dictionaries
 
 When there are multiple dictionaries that match a given request URL, the client
-SHOULD pick the dictionary with the longest match pattern string length.
+MUST pick the dictionary with the longest match pattern string length.
 
 # Negotiating the compression algorithm
 
@@ -173,8 +219,8 @@ negotiating content encoding in HTTP.
 
 This document introduces two new content encoding algorithms:
 
-"sbr" - Brotli using an external compression dictionary.
-"szstd" - Zstandard using an external compression dictionary.
+"br-d" - Brotli using an external compression dictionary.
+"zstd-d" - Zstandard using an external compression dictionary.
 
 The dictionary to use is negotiated separately and advertised in the
 "Sec-Available-Dictionary" request header.
@@ -184,7 +230,7 @@ The dictionary to use is negotiated separately and advertised in the
 The client adds the algorithms that it supports to the "Accept-Encoding"
 request header. e.g.:
 
-Accept-Encoding: gzip, deflate, br, zstd, sbr, szstd
+Accept-Encoding: gzip, deflate, br, zstd, br-d, zstd-d
 
 ## Content-Encoding
 
@@ -193,7 +239,7 @@ and chooses to compress the content of the response using the dictionary that
 the client has advertised then it sets the "Content-Encoding" response header
 to the appropriate value for the algorithm selected. e.g.:
 
-Content-Encoding: sbr
+Content-Encoding: br-d
 
 # IANA Considerations
 
@@ -215,7 +261,7 @@ an external dictionary
 # Compatibility Considerations
 
 To minimize the risk of middle-boxes incorrectly processing
-dictionary-compressed responses, compression dictionary transport SHOULD only
+dictionary-compressed responses, compression dictionary transport MUST only
 be used in secure contexts (HTTPS).
 
 # Security Considerations
@@ -246,21 +292,24 @@ information about the compressed data.
 
 ## Security Mitigations
 
+If any of the mitigations do not pass, the client MUST drop the response and
+return an error.
+
 ### Cross-origin protection
 
 To make sure that a dictionary can only impact content from the same origin
 where the dictionary was served, the "match" pattern used for matching a
-dictionary to requests SHOULD be for the same origin that the dictionary
+dictionary to requests MUST be for the same origin that the dictionary
 is served from.
 
 ### Response readability
 
 For clients, like web browsers, that provide additional protection against the
 readability of the payload of a response and against user tracking, additional
-protections SHOULD be taken to make sure that the use of dictionary-based
+protections MUST be taken to make sure that the use of dictionary-based
 compression does not reveal information that would not otherwise be available.
 
-In these cases, dictionary compression SHOULD only be used when both the
+In these cases, dictionary compression MUST only be used when both the
 dictionary and the compressed response are fully readable by the client.
 
 In browser terms, that means that both are either same-origin to the context
@@ -274,12 +323,10 @@ Since dictionaries are advertised in future requests using the hash of the
 content of the dictionary, it is possible to abuse the dictionary to turn it
 into a tracking cookie.
 
-To mitigate any additional tracking concerns, clients SHOULD treat dictionaries
+To mitigate any additional tracking concerns, clients MUST treat dictionaries
 in the same way that they treat cookies. This includes partitioning the storage
 as cookies are partitioned as well as clearing the dictionaries whenever
 cookies are cleared.
 
 --- back
 
-# Acknowledgments
-{:numbered="false"}
