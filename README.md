@@ -2,12 +2,10 @@
 
 This is the working area for the individual Internet-Draft, "Compression Dictionary Transport".
 
-* [Editor's Copy](https://pmeenan.github.io/i-d-compression-dictionary/#go.draft-meenan-compression-dictionary.html)
-<!---
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-meenan-compression-dictionary)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-meenan-compression-dictionary)
-* [Compare Editor's Copy to Individual Draft](https://pmeenan.github.io/i-d-compression-dictionary/#go.draft-meenan-compression-dictionary.diff)
--->
+* [Editor's Copy](https://pmeenan.github.io/i-d-compression-dictionary/#go.draft-meenan-httpbis-compression-dictionary.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-meenan-httpbis-compression-dictionary)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-meenan-httpbis-compression-dictionary)
+* [Compare Editor's Copy to Individual Draft](https://pmeenan.github.io/i-d-compression-dictionary/#go.draft-meenan-httpbis-compression-dictionary.diff)
 
 ## Contributing
 

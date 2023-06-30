@@ -5,7 +5,7 @@ title: Compression Dictionary Transport
 abbrev: compression-dictionary
 category: info
 
-docname: draft-meenan-compression-dictionary-latest
+docname: draft-meenan-httpbis-compression-dictionary-latest
 submissiontype: independent  # also: "IETF", "IAB", or "IRTF"
 number:
 date:
@@ -23,7 +23,7 @@ venue:
   mail: "ietf-http-wg@w3.org"
   arch: "https://lists.w3.org/Archives/Public/ietf-http-wg/"
   github: "pmeenan/i-d-compression-dictionary"
-  latest: "https://pmeenan.github.io/i-d-compression-dictionary/draft-meenan-compression-dictionary.html"
+  latest: "https://pmeenan.github.io/i-d-compression-dictionary/draft-meenan-httpbis-compression-dictionary.html"
 
 author:
   -
