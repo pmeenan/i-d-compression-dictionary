@@ -149,15 +149,15 @@ to the request to indicate to the server that it has a dictionary available to
 use for compression.
 
 The "Sec-Available-Dictionary" request header is a Structured Field {{RFC8941}}
-sf-string value that contains a Base16-encoded {{RFC4648}} hash of the contents
-of a single available dictionary calculated using one of the algorithms
-advertised as being supported by the server.
+sf-string value that contains a lowercase Base16-encoded {{RFC4648}} hash of
+the contents of a single available dictionary calculated using one of the
+algorithms advertised as being supported by the server.
 
 The client MUST only send a single "Sec-Available-Dictionary" request header
 with a single hash value for the best available match that it has available.
 
 For example:
-Sec-Available-Dictionary: A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E
+Sec-Available-Dictionary: a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e
 
 ### Dictionary freshness requirement
 
