@@ -90,6 +90,9 @@ The sf-string is parsed as a URL {{RFC3986}}, and supports absolute URLs
 as well as relative URLs. When stored, any relative URLs MUST be expanded
 so that only absolute URL patterns are used for matching against requests.
 
+The {{Origin}} of the URL in the "match" pattern MUST be the same as the
+origin of the request that specifies the "Use-As-Dictionary" response.
+
 The match URL supports using * as a wildcard within the match string for
 pattern-matching multiple URLs. URLs with a natural * in them are not directly
 supported unless they can rely on the behavior of * matching an arbitrary
