@@ -7,10 +7,8 @@ category: info
 
 docname: draft-meenan-httpbis-compression-dictionary-latest
 submissiontype: independent  # also: "IETF", "IAB", or "IRTF"
-number:
-date:
 #consensus: true
-v: 2
+v: 3
 area: "Applications and Real-Time"
 workgroup: "HTTP"
 keyword:
@@ -37,20 +35,25 @@ author:
     org: Google LLC
     email: yoavweiss@google.com
 
+normative:
+  FOLDING: RFC8792
+  RFC9110:  # HTTP semantics
+
 informative:
-  Brotli: RFC7932
-  Zstandard: RFC8878
   HTTP: RFC7230
   Origin: RFC6454
-  RFC3986:
-  RFC8941:
-  RFC4648:
+  RFC3986:  # URL
+  RFC8941:  # Structured fields
+  RFC4648:  # Base16 encoding
+  RFC7932:  # Brotli
+  RFC8878:  # Zstandard
 
 --- abstract
 
 This specification defines a mechanism for using designated {{HTTP}} responses
 as an external dictionary for future HTTP responses for compression schemes
-that support using external dictionaries (e.g. {{Brotli}} and {{Zstandard}}).
+that support using external dictionaries (e.g. Brotli {{RFC7932}} and Zstandard
+{{RFC8878}}).
 
 --- middle
 
@@ -58,11 +61,14 @@ that support using external dictionaries (e.g. {{Brotli}} and {{Zstandard}}).
 
 This specification defines a mechanism for using designated {{HTTP}} responses
 as an external dictionary for future HTTP responses for compression schemes
-that support using external dictionaries (e.g. {{Brotli}} and {{Zstandard}}).
+that support using external dictionaries (e.g. Brotli {{RFC7932}} and Zstandard
+{{RFC8878}}).
 
 This document describes the HTTP headers used for negotiating dictionary usage
 and registers media types for content encoding Brotli and Zstandard using a
 negotiated dictionary.
+
+This document uses the line folding strategies described in [FOLDING].
 
 # Dictionary Negotiation
 
@@ -125,7 +131,12 @@ The "hashes" value is optional and defaults to (sha-256).
 
 A response that contained a response header:
 
-Use-As-Dictionary: match="/product/*", ttl=604800, hashes=(sha-256 sha-512)
+~~~ http-message
+NOTE: '\' line wrapping per RFC 8792
+
+Use-As-Dictionary: \
+  match="/product/*", ttl=604800, hashes=(sha-256 sha-512)
+~~~
 
 Would specify matching any URL with a path prefix of /product/ on the same
 {{Origin}} as the original request, expiring as a dictionary in 7 days
@@ -136,7 +147,9 @@ both sha-256 and sha-512 hash algorithms.
 
 A response that contained a response header:
 
+~~~ http-message
 Use-As-Dictionary: match="/app/*/main.js"
+~~~
 
 Would match main.js in any directory under /app/, expiring as a dictionary in
 one year and support using the sha-256 hash algorithm.
@@ -157,7 +170,13 @@ The client MUST only send a single "Sec-Available-Dictionary" request header
 with a single hash value for the best available match that it has available.
 
 For example:
-Sec-Available-Dictionary: a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e
+
+~~~ http-message
+NOTE: '\' line wrapping per RFC 8792
+
+Sec-Available-Dictionary: \
+  a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e
+~~~
 
 ### Dictionary freshness requirement
 
@@ -234,7 +253,9 @@ The dictionary to use is negotiated separately and advertised in the
 The client adds the algorithms that it supports to the "Accept-Encoding"
 request header. e.g.:
 
+~~~ http-message
 Accept-Encoding: gzip, deflate, br, zstd, br-d, zstd-d
+~~~
 
 ## Content-Encoding
 
@@ -243,24 +264,36 @@ and chooses to compress the content of the response using the dictionary that
 the client has advertised then it sets the "Content-Encoding" response header
 to the appropriate value for the algorithm selected. e.g.:
 
+~~~ http-message
 Content-Encoding: br-d
+~~~
 
 # IANA Considerations
 
 ## Content Encoding
 
-IANA will add the following entries to the "HTTP Content Coding Registry"
-within the "Hypertext Transfer Protocol (HTTP) Parameters" registry:
+IANA is asked to update the "HTTP Content Coding Registry" registry
+({{RFC9110}}) according to the table below:
 
-Name: br-d
-Description: A stream of bytes compressed using the Brotli protocol with an
-external dictionary
-
-Name: zstd-d
-Description: A stream of bytes compressed using the Zstandard protocol with
-an external dictionary
+|--------|---------------------------------------------------------------------------------------|-------------|
+| Name   | Description                                                                           | Reference   |
+|--------|---------------------------------------------------------------------------------------|-------------|
+| br-d   | A stream of bytes compressed using the Brotli protocol with an external dictionary    | {{RFC7932}} |
+| zstd-d | A stream of bytes compressed using the Zstandard protocol with an external dictionary | {{RFC8878}} |
+|--------|---------------------------------------------------------------------------------------|-------------|
 
 ## Header Field Registration
+
+IANA is asked to update the
+"Hypertext Transfer Protocol (HTTP) Field Name Registry" registry
+({{RFC9110}}) according to the table below:
+
+|--------------------------|-----------|-----------------------------------------------|
+| Field Name               | Status    |                     Reference                 |
+|--------------------------|-----------|-----------------------------------------------|
+| Use-As-Dictionary        | permanent | {{use-as-dictionary}} of this document        |
+| Sec-Available-Dictionary | permanent | {{sec-available-dictionary}} of this document |
+|--------------------------|-----------|-----------------------------------------------|
 
 # Compatibility Considerations
 
@@ -270,8 +303,9 @@ be used in secure contexts (HTTPS).
 
 # Security Considerations
 
-The security considerations for [Brotli] and [Zstandard] apply to the
-dictionary-based versions of the respective algorithms.
+The security considerations for Brotli {{RFC7932}} and Zstandard
+{{RFC8878}} apply to the dictionary-based versions of the respective
+algorithms.
 
 ## Changing content
 
