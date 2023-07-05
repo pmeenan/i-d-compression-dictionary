@@ -200,34 +200,30 @@ for a successful match and FALSE for no-match:
 
 1. Let MATCH represent the absolute URL pattern from the "match" value for the
 given dictionary.
-2. LET URL represent the request URL being checked.
-3. If there are no * characters in MATCH:
-  a. If the MATCH and URL strings are identical, return TRUE.
-  b. Else, return FALSE.
-4. If there is a single * character in MATCH and it is at the end of the
+1. LET URL represent the request URL being checked.
+1. If there are no * characters in MATCH:
+    * If the MATCH and URL strings are identical, return TRUE.
+    * Else, return FALSE.
+1. If there is a single * character in MATCH and it is at the end of the
    string:
-  a. If the MATCH string is identical to the start of the URL string, return
-     TRUE.
-  b. Else, return FALSE.
-5. Split the MATCH string by the * character into an array of MATCHES
+    * If the MATCH string is identical to the start of the URL string, return
+       TRUE.
+    * Else, return FALSE.
+1. Split the MATCH string by the * character into an array of MATCHES
    (excluding the * deliminator from the individual entries).
-6. Pop the first entry in MATCHES from the front of the array into PATTERN.
-  a. If PATTERN is identical to the start of the URL string, remove the
-     beginning of the URL string until the end of the match to PATTERN.
-  b. Else, return FALSE.
-7. If there is not a * character at the end of MATCH:
-  a. Pop the last entry in MATCHES from the end of the array into PATTERN.
-  b. If PATTERN is identical to the end of the URL string, remove the end of
-     the URL string to the beginning of the match to PATTERN.
-  c. Else, return FALSE.
-8. Pop each entry off of the front of the MATCHES array into PATTERN. For
+1. If there is not a * character at the end of MATCH:
+    * Pop the last entry in MATCHES from the end of the array into PATTERN.
+    * If PATTERN is identical to the end of the URL string, remove the end of
+       the URL string to the beginning of the match to PATTERN.
+    * Else, return FALSE.
+1. Pop the first entry in MATCHES from the front of the array into PATTERN.
+    * If PATTERN is not identical to the start of the URL string, return FALSE.
+1. Pop each entry off of the front of the MATCHES array into PATTERN. For
    each PATTERN, in order:
-  a. Search for PATTERN in URL from the beginning of URL and stop at the first
-     match.
-  b. If no match is found, return FALSE.
-  c. Remove the beginning of the URL string until the end of the match to the
-     first occurrence of PATTERN.
-9. Return TRUE.
+    * Search for the first match of PATTERN in URL, starting from the position
+      of the end of the previous match.
+    * If no match is found, return FALSE.
+1. Return TRUE.
 
 ### Multiple matching dictionaries
 
