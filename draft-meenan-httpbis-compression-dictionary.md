@@ -239,6 +239,7 @@ negotiating content encoding in HTTP.
 This document introduces two new content encoding algorithms:
 
 "br-d" - Brotli using an external compression dictionary.
+
 "zstd-d" - Zstandard using an external compression dictionary.
 
 The dictionary to use is negotiated separately and advertised in the
