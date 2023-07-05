@@ -90,13 +90,14 @@ The sf-string is parsed as a URL {{RFC3986}}, and supports absolute URLs
 as well as relative URLs. When stored, any relative URLs MUST be expanded
 so that only absolute URL patterns are used for matching against requests.
 
-The {{Origin}} of the URL in the "match" pattern MUST be the same as the
-origin of the request that specifies the "Use-As-Dictionary" response.
-
 The match URL supports using * as a wildcard within the match string for
 pattern-matching multiple URLs. URLs with a natural * in them are not directly
 supported unless they can rely on the behavior of * matching an arbitrary
 string.
+
+The {{Origin}} of the URL in the "match" pattern MUST be the same as the
+origin of the request that specifies the "Use-As-Dictionary" response and MUST
+not include a * wildcard.
 
 The "match" value is required and MUST be included in the Use-As-Dictionary
 sf-dictionary for the dictionary to be considered valid.
@@ -106,14 +107,15 @@ sf-dictionary for the dictionary to be considered valid.
 The "ttl" value of the Use-As-Dictionary header is a sf-integer value that
 provides the time in seconds that the dictionary is valid for (time to live).
 
-This is independent of the cache lifetime of the resource being used for the
-dictionary. If the underlying resource is evicted from cache then it is also
-removed but this allows for setting an explicit time to live for use as a
+The "ttl" is independent of the cache lifetime of the resource being used for
+the dictionary. If the underlying resource is evicted from cache then it is
+also removed but this allows for setting an explicit time to live for use as a
 dictionary independent of the underlying resource in cache. Expired resources
 can still be useful as dictionaries while they are in cache and can be used for
 fetching updates of the expired resource. It can also be useful to artificially
 limit the life of a dictionary in cases where the dictionary is updated
-frequently, to limit the number of possible incoming dictionary values.
+frequently which can help limit the number of possible incoming dictionary
+variations.
 
 The "ttl" value is optional and defaults to 31536000 (1 year).
 
@@ -269,6 +271,14 @@ to the appropriate value for the algorithm selected. e.g.:
 
 ~~~ http-message
 Content-Encoding: br-d
+~~~
+
+If the response is cacheable, it MUST include a "Vary" header to prevent caches
+serving dictionary-compressed resources to clients that don't support them or
+serving the response compressed with the wrong dictionary:
+
+~~~ http-message
+Vary: accept-encoding, sec-available-dictionary
 ~~~
 
 # IANA Considerations
