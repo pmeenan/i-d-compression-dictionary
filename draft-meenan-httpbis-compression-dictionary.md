@@ -364,9 +364,44 @@ In these cases, dictionary compression MUST only be used when both the
 dictionary and the compressed response are fully readable by the client.
 
 In browser terms, that means that both are either same-origin to the context
-they are being fetched from or that both include an
-"Access-Control-Allow-Origin" response header that matches the "Origin" request
-header they are fetched from.
+they are being fetched from or that the response is cross-origin and passes
+the CORS check (https://fetch.spec.whatwg.org/#cors-check).
+
+Specifically, for requests that include a "Sec-Fetch-Mode" request header:
+
+1. If the value of the "Sec-Fetch-Mode:" request header is "no-cors":
+    * Response MUST NOT be used as a dictionary.
+    * Response MUST NOT be compressed by an available dictionary.
+1. If the value of the "Sec-Fetch-Mode:" request header is "navigate":
+    * Response MUST NOT be used as a dictionary.
+    * Response MAY be compressed by an available dictionary.
+1. If the value of the "Sec-Fetch-Mode:" request header is "same-origin":
+    * Response MAY be used as a dictionary.
+    * Response MAY be compressed by an available dictionary.
+1. If the value of the "Sec-Fetch-Mode:" request header is "cors":
+    * For clients, apply the CORS check from the fetch spec (https://fetch.spec.whatwg.org/#cors-check) which includes credentials checking restrictions that may not be possible to check on the server.
+        * If the CORS check passes:
+            * Response MAY be used as a dictionary.
+            * Response MAY be compressed by an available dictionary.
+        * Else:
+            * Response MUST NOT be used as a dictionary.
+            * Response MUST NOT be compressed by an available dictionary.
+    * For servers:
+        * If the response does not include an "Access-Control-Allow-Origin" response header:
+            * Response MUST NOT be used as a dictionary.
+            * Response MUST NOT be compressed by an available dictionary.
+        * If the request does not include an "Origin" request header:
+            * Response MUST NOT be used as a dictionary.
+            * Response MUST NOT be compressed by an available dictionary.
+        * If the value of the "Access-Control-Allow-Origin" response header is "*":
+            * Response MAY be used as a dictionary.
+            * Response MAY be compressed by an available dictionary.
+        * If the value of the "Access-Control-Allow-Origin" response header matches the value of the "Origin" request header:
+            * Response MAY be used as a dictionary.
+            * Response MAY be compressed by an available dictionary.
+1. If the value of the "Sec-Fetch-Mode:" request header is any other value:
+    * Response MUST NOT be used as a dictionary.
+    * Response MUST NOT be compressed by an available dictionary.
 
 # Privacy Considerations
 
