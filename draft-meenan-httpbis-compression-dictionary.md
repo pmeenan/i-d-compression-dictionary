@@ -42,6 +42,7 @@ normative:
 informative:
   HTTP: RFC7230
   Origin: RFC6454
+  ABNF: RFC5234
   RFC3986:  # URL
   RFC8941:  # Structured fields
   RFC4648:  # Base16 encoding
@@ -166,10 +167,17 @@ appropriate dictionary, it can add a "Sec-Available-Dictionary" request header
 to the request to indicate to the server that it has a dictionary available to
 use for compression.
 
-The "Sec-Available-Dictionary" request header is a Structured Field {{RFC8941}}
-sf-string value that contains a lowercase Base16-encoded {{RFC4648}} hash of
-the contents of a single available dictionary calculated using one of the
-algorithms advertised as being supported by the server.
+The "Sec-Available-Dictionary" request header is a lowercase Base16-encoded
+{{RFC4648}} hash of the contents of a single available dictionary calculated
+using one of the algorithms advertised as being supported by the server.
+
+Its syntax is defined by the following {{ABNF}}:
+
+~~~ abnf
+Sec-Available-Dictionary = hvalue
+hvalue                   = 1*hchar
+hchar                    = DIGIT / "a" / "b" / "c" / "d" / "e" / "f"
+~~~
 
 The client MUST only send a single "Sec-Available-Dictionary" request header
 with a single hash value for the best available match that it has available.
