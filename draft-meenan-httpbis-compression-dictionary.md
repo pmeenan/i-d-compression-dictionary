@@ -375,16 +375,28 @@ In browser terms, that means that both are either same-origin to the context
 they are being fetched from or that the response is cross-origin and passes
 the CORS check (https://fetch.spec.whatwg.org/#cors-check).
 
-* For any request that includes a "Sec-Fetch-Site:" request header with the value set to "same-site":
+#### Same-Origin
+
+On the client-side, same-origin determination is defined in the fetch spec (https://html.spec.whatwg.org/multipage/browsers.html#origin).
+
+On the server-side, a request with a "Sec-Fetch-Site:" request header with a value of "same-origin" is to be considered a same-origin request.
+
+* For any request that is same-origin:
     * Response MAY be used as a dictionary.
     * Response MAY be compressed by an available dictionary.
 
-Otherwise, for requests that include a "Sec-Fetch-Mode" request header:
+#### Cross-Origin
 
-1. If the value of the "Sec-Fetch-Mode:" request header is "navigate" or "same-origin":
+For requests that are not same-origin ({{same-origin}}), the "mode" of the request can be used to determine the readability of the response.
+
+For clients that conform to the fetch spec, the mode of the request is stored in the RequestMode attribute of the request (https://fetch.spec.whatwg.org/#requestmode).
+
+For servers responding to clients that expose the request mode information, the value of the mode is sent in the "Sec-Fetch-Mode" request header.
+
+1. If the mode is "navigate" or "same-origin":
     * Response MAY be used as a dictionary.
     * Response MAY be compressed by an available dictionary.
-1. If the value of the "Sec-Fetch-Mode:" request header is "cors":
+1. If the mode is "cors":
     * For clients, apply the CORS check from the fetch spec (https://fetch.spec.whatwg.org/#cors-check) which includes credentials checking restrictions that may not be possible to check on the server.
         * If the CORS check passes:
             * Response MAY be used as a dictionary.
@@ -405,7 +417,7 @@ Otherwise, for requests that include a "Sec-Fetch-Mode" request header:
         * If the value of the "Access-Control-Allow-Origin" response header matches the value of the "Origin" request header:
             * Response MAY be used as a dictionary.
             * Response MAY be compressed by an available dictionary.
-1. If the value of the "Sec-Fetch-Mode:" request header is any other value (including "no-cors"):
+1. If the mode is any other value (including "no-cors"):
     * Response MUST NOT be used as a dictionary.
     * Response MUST NOT be compressed by an available dictionary.
 
