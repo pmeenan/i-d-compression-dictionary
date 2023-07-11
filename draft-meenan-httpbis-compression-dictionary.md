@@ -393,6 +393,8 @@ For clients that conform to the fetch spec, the mode of the request is stored in
 
 For servers responding to clients that expose the request mode information, the value of the mode is sent in the "Sec-Fetch-Mode" request header.
 
+If a "Sec-Fetch-Mode" request header is not present, the server SHOULD allow for the dictionary compression to be used.
+
 1. If the mode is "navigate" or "same-origin":
     * Response MAY be used as a dictionary.
     * Response MAY be compressed by an available dictionary.
