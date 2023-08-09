@@ -80,7 +80,7 @@ be used as a dictionary for future requests for URLs that match the pattern
 specified in the Use-As-Dictionary response header.
 
 The Use-As-Dictionary response header is a Structured Field {{RFC8941}}
-sf-dictionary with values for "match", "ttl" and "hashes".
+sf-dictionary with values for "match", "ttl", "type" and "hashes".
 
 ### match
 
@@ -119,6 +119,19 @@ frequently which can help limit the number of possible incoming dictionary
 variations.
 
 The "ttl" value is optional and defaults to 31536000 (1 year).
+
+### type
+
+The "type" value of the Use-As-Dictionary header is a sf-string value that
+describes the file format of the supplied dictionary.
+
+"raw" is the only defined dictionary format which represents an unformatted
+blob of bytes suitable for any compression scheme to use.
+
+If a client receives a dictionary with a type that it does not understand, it
+MUST NOT use the dictionary.
+
+The "type" value is optional and defaults to "raw".
 
 ### hashes
 
