@@ -5,7 +5,7 @@
 HTTP                                                           P. Meenan
 Internet-Draft                                                  Y. Weiss
 Intended status: Informational                                Google LLC
-Expires: 12 January 2024                                    11 July 2023
+Expires: 10 February 2024                                  9 August 2023
 
 
                     Compression Dictionary Transport
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 January 2024.
+   This Internet-Draft will expire on 10 February 2024.
 
 Copyright Notice
 
@@ -70,8 +70,9 @@ Table of Contents
      2.1.  Use-As-Dictionary
        2.1.1.  match
        2.1.2.  ttl
-       2.1.3.  hashes
-       2.1.4.  Examples
+       2.1.3.  type
+       2.1.4.  hashes
+       2.1.5.  Examples
      2.2.  Sec-Available-Dictionary
        2.2.1.  Dictionary freshness requirement
        2.2.2.  Dictionary URL matching
@@ -119,7 +120,7 @@ Table of Contents
    header.
 
    The Use-As-Dictionary response header is a Structured Field [RFC8941]
-   sf-dictionary with values for "match", "ttl" and "hashes".
+   sf-dictionary with values for "match", "ttl", "type" and "hashes".
 
 2.1.1.  match
 
@@ -163,7 +164,20 @@ Table of Contents
 
    The "ttl" value is optional and defaults to 31536000 (1 year).
 
-2.1.3.  hashes
+2.1.3.  type
+
+   The "type" value of the Use-As-Dictionary header is a sf-string value
+   that describes the file format of the supplied dictionary.
+
+   "raw" is the only defined dictionary format which represents an
+   unformatted blob of bytes suitable for any compression scheme to use.
+
+   If a client receives a dictionary with a type that it does not
+   understand, it MUST NOT use the dictionary.
+
+   The "type" value is optional and defaults to "raw".
+
+2.1.4.  hashes
 
    The "hashes" value of the Use-As-Dictionary header is a inner-list
    value that provides a list of supported hash algorithms in order of
@@ -174,9 +188,9 @@ Table of Contents
 
    The "hashes" value is optional and defaults to (sha-256).
 
-2.1.4.  Examples
+2.1.5.  Examples
 
-2.1.4.1.  Path Prefix
+2.1.5.1.  Path Prefix
 
    A response that contained a response header:
 
@@ -190,7 +204,7 @@ Table of Contents
    days independent of the cache lifetime of the resource, and advertise
    support for both sha-256 and sha-512 hash algorithms.
 
-2.1.4.2.  Versioned Directories
+2.1.5.2.  Versioned Directories
 
    A response that contained a response header:
 

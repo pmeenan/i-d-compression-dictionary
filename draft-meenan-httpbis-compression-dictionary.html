@@ -13,20 +13,20 @@ as an external dictionary for future HTTP responses for compression schemes
 that support using external dictionaries (e.g. Brotli   and Zstandard
  ). 
     " name="description">
-<meta content="xml2rfc 3.17.4" name="generator">
+<meta content="xml2rfc 3.17.5" name="generator">
 <meta content="compression dictionary" name="keyword">
 <meta content="shared brotli" name="keyword">
 <meta content="zstandard dictionary" name="keyword">
 <meta content="draft-meenan-httpbis-compression-dictionary-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.17.4
+  xml2rfc 3.17.5
     Python 3.11.4
     ConfigArgParse 1.5.3
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
-    lxml 4.9.2
-    platformdirs 3.8.0
+    lxml 4.9.3
+    platformdirs 3.10.0
     pycountry 22.3.5
     PyYAML 6.0
     requests 2.31.0
@@ -1053,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">compression-dictionary</td>
-<td class="right">July 2023</td>
+<td class="right">August 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Meenan &amp; Weiss</td>
-<td class="center">Expires 12 January 2024</td>
+<td class="center">Expires 10 February 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-meenan-httpbis-compression-dictionary-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-07-11" class="published">11 July 2023</time>
+<time datetime="2023-08-09" class="published">9 August 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-01-12">12 January 2024</time></dd>
+<dd class="expires"><time datetime="2024-02-10">10 February 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ that support using external dictionaries (e.g. Brotli <span>[<a href="#RFC7932" 
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 12 January 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 10 February 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1173,10 +1173,13 @@ that support using external dictionaries (e.g. Brotli <span>[<a href="#RFC7932" 
                     <p id="section-toc.1-1.2.2.1.2.2.1" class="keepWithNext"><a href="#section-2.1.2" class="auto internal xref">2.1.2</a>.  <a href="#name-ttl" class="internal xref">ttl</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.3">
-                    <p id="section-toc.1-1.2.2.1.2.3.1"><a href="#section-2.1.3" class="auto internal xref">2.1.3</a>.  <a href="#name-hashes" class="internal xref">hashes</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.3.1"><a href="#section-2.1.3" class="auto internal xref">2.1.3</a>.  <a href="#name-type" class="internal xref">type</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.4">
-                    <p id="section-toc.1-1.2.2.1.2.4.1"><a href="#section-2.1.4" class="auto internal xref">2.1.4</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.4.1"><a href="#section-2.1.4" class="auto internal xref">2.1.4</a>.  <a href="#name-hashes" class="internal xref">hashes</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.5">
+                    <p id="section-toc.1-1.2.2.1.2.5.1"><a href="#section-2.1.5" class="auto internal xref">2.1.5</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
 </li>
                 </ul>
 </li>
@@ -1293,7 +1296,7 @@ negotiated dictionary.<a href="#section-1-2" class="pilcrow">¶</a></p>
 be used as a dictionary for future requests for URLs that match the pattern
 specified in the Use-As-Dictionary response header.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.1-2">The Use-As-Dictionary response header is a Structured Field <span>[<a href="#RFC8941" class="cite xref">RFC8941</a>]</span>
-sf-dictionary with values for "match", "ttl" and "hashes".<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+sf-dictionary with values for "match", "ttl", "type" and "hashes".<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 <div id="match">
 <section id="section-2.1.1">
           <h4 id="name-match">
@@ -1334,57 +1337,71 @@ variations.<a href="#section-2.1.2-2" class="pilcrow">¶</a></p>
 <p id="section-2.1.2-3">The "ttl" value is optional and defaults to 31536000 (1 year).<a href="#section-2.1.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="hashes">
+<div id="type">
 <section id="section-2.1.3">
-          <h4 id="name-hashes">
-<a href="#section-2.1.3" class="section-number selfRef">2.1.3. </a><a href="#name-hashes" class="section-name selfRef">hashes</a>
+          <h4 id="name-type">
+<a href="#section-2.1.3" class="section-number selfRef">2.1.3. </a><a href="#name-type" class="section-name selfRef">type</a>
           </h4>
-<p id="section-2.1.3-1">The "hashes" value of the Use-As-Dictionary header is a inner-list value
+<p id="section-2.1.3-1">The "type" value of the Use-As-Dictionary header is a sf-string value that
+describes the file format of the supplied dictionary.<a href="#section-2.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.3-2">"raw" is the only defined dictionary format which represents an unformatted
+blob of bytes suitable for any compression scheme to use.<a href="#section-2.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.3-3">If a client receives a dictionary with a type that it does not understand, it
+MUST NOT use the dictionary.<a href="#section-2.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.1.3-4">The "type" value is optional and defaults to "raw".<a href="#section-2.1.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="hashes">
+<section id="section-2.1.4">
+          <h4 id="name-hashes">
+<a href="#section-2.1.4" class="section-number selfRef">2.1.4. </a><a href="#name-hashes" class="section-name selfRef">hashes</a>
+          </h4>
+<p id="section-2.1.4-1">The "hashes" value of the Use-As-Dictionary header is a inner-list value
 that provides a list of supported hash algorithms in order of server
-preference.<a href="#section-2.1.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.1.3-2">The dictionaries are identified by the hash of their contents and this value
-allows for negotiation of the algorithm to use.<a href="#section-2.1.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.1.3-3">The "hashes" value is optional and defaults to (sha-256).<a href="#section-2.1.3-3" class="pilcrow">¶</a></p>
+preference.<a href="#section-2.1.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.4-2">The dictionaries are identified by the hash of their contents and this value
+allows for negotiation of the algorithm to use.<a href="#section-2.1.4-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.4-3">The "hashes" value is optional and defaults to (sha-256).<a href="#section-2.1.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="examples">
-<section id="section-2.1.4">
+<section id="section-2.1.5">
           <h4 id="name-examples">
-<a href="#section-2.1.4" class="section-number selfRef">2.1.4. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+<a href="#section-2.1.5" class="section-number selfRef">2.1.5. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
           </h4>
 <div id="path-prefix">
-<section id="section-2.1.4.1">
+<section id="section-2.1.5.1">
             <h5 id="name-path-prefix">
-<a href="#section-2.1.4.1" class="section-number selfRef">2.1.4.1. </a><a href="#name-path-prefix" class="section-name selfRef">Path Prefix</a>
+<a href="#section-2.1.5.1" class="section-number selfRef">2.1.5.1. </a><a href="#name-path-prefix" class="section-name selfRef">Path Prefix</a>
             </h5>
-<p id="section-2.1.4.1-1">A response that contained a response header:<a href="#section-2.1.4.1-1" class="pilcrow">¶</a></p>
-<div class="lang-http-message sourcecode" id="section-2.1.4.1-2">
+<p id="section-2.1.5.1-1">A response that contained a response header:<a href="#section-2.1.5.1-1" class="pilcrow">¶</a></p>
+<div class="lang-http-message sourcecode" id="section-2.1.5.1-2">
 <pre>
 NOTE: '\' line wrapping per RFC 8792
 
 Use-As-Dictionary: \
   match="/product/*", ttl=604800, hashes=(sha-256 sha-512)
-</pre><a href="#section-2.1.4.1-2" class="pilcrow">¶</a>
+</pre><a href="#section-2.1.5.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-2.1.4.1-3">Would specify matching any URL with a path prefix of /product/ on the same
+<p id="section-2.1.5.1-3">Would specify matching any URL with a path prefix of /product/ on the same
 <span>[<a href="#Origin" class="cite xref">Origin</a>]</span> as the original request, expiring as a dictionary in 7 days
 independent of the cache lifetime of the resource, and advertise support for
-both sha-256 and sha-512 hash algorithms.<a href="#section-2.1.4.1-3" class="pilcrow">¶</a></p>
+both sha-256 and sha-512 hash algorithms.<a href="#section-2.1.5.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="versioned-directories">
-<section id="section-2.1.4.2">
+<section id="section-2.1.5.2">
             <h5 id="name-versioned-directories">
-<a href="#section-2.1.4.2" class="section-number selfRef">2.1.4.2. </a><a href="#name-versioned-directories" class="section-name selfRef">Versioned Directories</a>
+<a href="#section-2.1.5.2" class="section-number selfRef">2.1.5.2. </a><a href="#name-versioned-directories" class="section-name selfRef">Versioned Directories</a>
             </h5>
-<p id="section-2.1.4.2-1">A response that contained a response header:<a href="#section-2.1.4.2-1" class="pilcrow">¶</a></p>
-<div class="lang-http-message sourcecode" id="section-2.1.4.2-2">
+<p id="section-2.1.5.2-1">A response that contained a response header:<a href="#section-2.1.5.2-1" class="pilcrow">¶</a></p>
+<div class="lang-http-message sourcecode" id="section-2.1.5.2-2">
 <pre>
 Use-As-Dictionary: match="/app/*/main.js"
-</pre><a href="#section-2.1.4.2-2" class="pilcrow">¶</a>
+</pre><a href="#section-2.1.5.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-2.1.4.2-3">Would match main.js in any directory under /app/, expiring as a dictionary in
-one year and support using the sha-256 hash algorithm.<a href="#section-2.1.4.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.1.5.2-3">Would match main.js in any directory under /app/, expiring as a dictionary in
+one year and support using the sha-256 hash algorithm.<a href="#section-2.1.5.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
