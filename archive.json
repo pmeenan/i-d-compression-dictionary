@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-08-27T00:39:28.819680+00:00",
+  "timestamp": "2023-08-29T00:37:35.434162+00:00",
   "repo": "pmeenan/i-d-compression-dictionary",
   "labels": [
     {
@@ -62,7 +62,7 @@
       "labels": [],
       "body": "For what it's worth, I like Roy's idea of prefix+suffix matching in place of arbitrary wildcards.  Pattern matching is more expensive than simple prefix/suffix matches.\r\n\r\nAlso, \"*\" is a valid path character in HTTP.  Maybe that was unwise, but that's what RFC 3986 says.  Probably not a big deal (you can avoid using it if you plan to use this feature), but still.",
       "createdAt": "2023-08-17T22:45:12Z",
-      "updatedAt": "2023-08-18T16:54:31Z",
+      "updatedAt": "2023-08-28T23:40:08Z",
       "closedAt": null,
       "comments": [
         {
@@ -78,6 +78,13 @@
           "body": "The origin is already excluded from being configurable. There is some discussion about only supporting relative paths but allowing for full URLs just made it easier to reference the existing URL RFC without having to re-define just the parts we need to support.\r\n\r\nQuery params can't necessarily be excluded and some sites are going to want to allow for either fixed query param matching or wildcard (and maybe for both the static and dynamic use case).  Allowing for * allows for some flexibility in site URL structure while still keeping the matching relatively simple and without the complexity of [URLPattern](\r\nhttps://github.com/WICG/urlpattern/blob/main/mdn-drafts/QUICK-REFERENCE.md)\r\n\r\n[listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0131.html)",
           "createdAt": "2023-08-18T16:54:30Z",
           "updatedAt": "2023-08-18T16:54:30Z"
+        },
+        {
+          "author": "royfielding",
+          "authorAssociation": "NONE",
+          "body": "I get really nervous when I see shell syntax mixed with URI syntax as a form of pattern matching. We usually don't do that on servers. Regular expression syntax is an even bigger foot gun, but we already have that implemented. Alternatively, the URI Template syntax is a form of pattern matching that is more specific than a wildcard.\r\n\r\nIf prefix/suffix is insufficient, then maybe \"contains\" could be there as well, though I'd seriously question why a site would want this much flexibility.",
+          "createdAt": "2023-08-28T23:40:08Z",
+          "updatedAt": "2023-08-28T23:40:08Z"
         }
       ]
     },
@@ -220,7 +227,7 @@
       "labels": [],
       "body": "For the existing draft, there is a lot of unnecessary confusion regarding features of fetch, like CORS, that don't make any sense from a security perspective. That's not what CORS is capable of covering, nor how it is implemented in practice, so reusing it doesn't make any sense. \r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0130.html)\r\ncc @royfielding",
       "createdAt": "2023-08-18T16:45:34Z",
-      "updatedAt": "2023-08-18T16:50:12Z",
+      "updatedAt": "2023-08-29T00:20:45Z",
       "closedAt": null,
       "comments": [
         {
@@ -229,6 +236,13 @@
           "body": "CORS covers privacy from a browser perspective as far as the readability of responses relative to the origin of the containing document which is exactly the context that it is needed for here.\r\n\r\nThe concern that it takes care of is to make sure that responses that shouldn't be readable from the document context of the client can't be exposed to oracle timing attacks (because there won't be any client-opaque responses).\r\n\r\nHTTP itself doesn't really have the same document framing context and need for protecting read access of individual responses on a shared connection by clients running in different document contexts.\r\n\r\n[listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0131.html)",
           "createdAt": "2023-08-18T16:50:11Z",
           "updatedAt": "2023-08-18T16:50:11Z"
+        },
+        {
+          "author": "royfielding",
+          "authorAssociation": "NONE",
+          "body": "I still don't see how CORS applies to the draft.\r\n\r\nIf the origin is choosing both the available dictionaries and whether or not to apply them to a given response, why is the context of a request relevant to the nature or credibility of the compressed response? Neither one is controlled by the context. The origin server isn't going to attack itself. The client might choose not to advertise an available dictionary based on the context, but I don't see how ignoring a server's valid response makes a difference.\r\n\r\nI assume the content of the response after decompressions would still be restricted by CORS, but that should already be defined by fetch; I wouldn't expect this document to specify it.",
+          "createdAt": "2023-08-29T00:20:44Z",
+          "updatedAt": "2023-08-29T00:20:44Z"
         }
       ]
     },
