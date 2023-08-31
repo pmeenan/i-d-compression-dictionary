@@ -173,26 +173,26 @@ Use-As-Dictionary: match="/app/*/main.js"
 Would match main.js in any directory under /app/, expiring as a dictionary in
 one year and support using the sha-256 hash algorithm.
 
-## Sec-Available-Dictionary
+## Available-Dictionary
 
 When a HTTP client makes a request for a resource for which it has an
-appropriate dictionary, it can add a "Sec-Available-Dictionary" request header
+appropriate dictionary, it can add a "Available-Dictionary" request header
 to the request to indicate to the server that it has a dictionary available to
 use for compression.
 
-The "Sec-Available-Dictionary" request header is a lowercase Base16-encoded
+The "Available-Dictionary" request header is a lowercase Base16-encoded
 {{RFC4648}} hash of the contents of a single available dictionary calculated
 using one of the algorithms advertised as being supported by the server.
 
 Its syntax is defined by the following {{ABNF}}:
 
 ~~~ abnf
-Sec-Available-Dictionary = hvalue
-hvalue                   = 1*hchar
-hchar                    = DIGIT / "a" / "b" / "c" / "d" / "e" / "f"
+Available-Dictionary = hvalue
+hvalue               = 1*hchar
+hchar                = DIGIT / "a" / "b" / "c" / "d" / "e" / "f"
 ~~~
 
-The client MUST only send a single "Sec-Available-Dictionary" request header
+The client MUST only send a single "Available-Dictionary" request header
 with a single hash value for the best available match that it has available.
 
 For example:
@@ -200,7 +200,7 @@ For example:
 ~~~ http-message
 NOTE: '\' line wrapping per RFC 8792
 
-Sec-Available-Dictionary: \
+Available-Dictionary: \
   a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e
 ~~~
 
@@ -272,7 +272,7 @@ This document introduces two new content encoding algorithms:
 |------------------|----------------------------------------------------|
 
 The dictionary to use is negotiated separately and advertised in the
-"Sec-Available-Dictionary" request header.
+"Available-Dictionary" request header.
 
 ## Accept-Encoding
 
@@ -299,7 +299,7 @@ serving dictionary-compressed resources to clients that don't support them or
 serving the response compressed with the wrong dictionary:
 
 ~~~ http-message
-Vary: accept-encoding, sec-available-dictionary
+Vary: accept-encoding, available-dictionary
 ~~~
 
 # IANA Considerations
@@ -322,12 +322,12 @@ IANA is asked to update the
 "Hypertext Transfer Protocol (HTTP) Field Name Registry" registry
 ({{RFC9110}}) according to the table below:
 
-|--------------------------|-----------|-----------------------------------------------|
-| Field Name               | Status    |                     Reference                 |
-|--------------------------|-----------|-----------------------------------------------|
-| Use-As-Dictionary        | permanent | {{use-as-dictionary}} of this document        |
-| Sec-Available-Dictionary | permanent | {{sec-available-dictionary}} of this document |
-|--------------------------|-----------|-----------------------------------------------|
+|----------------------|-----------|-------------------------------------------|
+| Field Name           | Status    |                 Reference                 |
+|----------------------|-----------|-------------------------------------------|
+| Use-As-Dictionary    | permanent | {{use-as-dictionary}} of this document    |
+| Available-Dictionary | permanent | {{available-dictionary}} of this document |
+|----------------------|-----------|-------------------------------------------|
 
 # Compatibility Considerations
 
