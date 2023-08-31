@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-08-29T00:37:35.434162+00:00",
+  "timestamp": "2023-08-31T00:37:54.893376+00:00",
   "repo": "pmeenan/i-d-compression-dictionary",
   "labels": [
     {
@@ -62,7 +62,7 @@
       "labels": [],
       "body": "For what it's worth, I like Roy's idea of prefix+suffix matching in place of arbitrary wildcards.  Pattern matching is more expensive than simple prefix/suffix matches.\r\n\r\nAlso, \"*\" is a valid path character in HTTP.  Maybe that was unwise, but that's what RFC 3986 says.  Probably not a big deal (you can avoid using it if you plan to use this feature), but still.",
       "createdAt": "2023-08-17T22:45:12Z",
-      "updatedAt": "2023-08-28T23:40:08Z",
+      "updatedAt": "2023-08-29T18:43:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -85,6 +85,13 @@
           "body": "I get really nervous when I see shell syntax mixed with URI syntax as a form of pattern matching. We usually don't do that on servers. Regular expression syntax is an even bigger foot gun, but we already have that implemented. Alternatively, the URI Template syntax is a form of pattern matching that is more specific than a wildcard.\r\n\r\nIf prefix/suffix is insufficient, then maybe \"contains\" could be there as well, though I'd seriously question why a site would want this much flexibility.",
           "createdAt": "2023-08-28T23:40:08Z",
           "updatedAt": "2023-08-28T23:40:08Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "@royfielding Not sure that it helps any, but the server wouldn't be doing any path matching. It just provides the path string as a hint to the client for where the dictionary would be usable (doesn't need to be validated on the server side at request time - no harm if a resource outside of the path is compressed).\r\n\r\nI'll do some browsing over the next week or so and build up a library of URL patterns for static resources and \"similar\" HTML pages and see what things look like in the wild.",
+          "createdAt": "2023-08-29T18:43:17Z",
+          "updatedAt": "2023-08-29T18:43:17Z"
         }
       ]
     },
@@ -227,7 +234,7 @@
       "labels": [],
       "body": "For the existing draft, there is a lot of unnecessary confusion regarding features of fetch, like CORS, that don't make any sense from a security perspective. That's not what CORS is capable of covering, nor how it is implemented in practice, so reusing it doesn't make any sense. \r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0130.html)\r\ncc @royfielding",
       "createdAt": "2023-08-18T16:45:34Z",
-      "updatedAt": "2023-08-29T00:20:45Z",
+      "updatedAt": "2023-08-29T01:21:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -243,6 +250,13 @@
           "body": "I still don't see how CORS applies to the draft.\r\n\r\nIf the origin is choosing both the available dictionaries and whether or not to apply them to a given response, why is the context of a request relevant to the nature or credibility of the compressed response? Neither one is controlled by the context. The origin server isn't going to attack itself. The client might choose not to advertise an available dictionary based on the context, but I don't see how ignoring a server's valid response makes a difference.\r\n\r\nI assume the content of the response after decompressions would still be restricted by CORS, but that should already be defined by fetch; I wouldn't expect this document to specify it.",
           "createdAt": "2023-08-29T00:20:44Z",
           "updatedAt": "2023-08-29T00:20:44Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "The concern raised by the security team is that a client could abuse dictionary compression and a timing attack to expose the contents of a CORS-opaque response.  The contents themselves would already be prevented from being exposed directly but there's a theoretical risk that an origin serving private data through dictionary compression could expose that data unexpectedly in a cross-origin timing attack.\r\n\r\nI don't know enough about the practicality of timing-based oracle attacks using dictionary compression and the level of control that an attacker would need to have on either the payload of the response or the payload of the dictionary but in an abundance of caution we are recommending that servers avoid the problem entirely and don't use dictionaries in cross-origin opaque responses (even if it would be blocked from being processed in the client).",
+          "createdAt": "2023-08-29T01:21:27Z",
+          "updatedAt": "2023-08-29T01:21:27Z"
         }
       ]
     },
