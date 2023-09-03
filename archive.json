@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-08-31T00:37:54.893376+00:00",
+  "timestamp": "2023-09-03T00:39:42.096283+00:00",
   "repo": "pmeenan/i-d-compression-dictionary",
   "labels": [
     {
@@ -148,15 +148,15 @@
       "id": "I_kwDOJ1PnBs5ur4Q5",
       "title": "Remove the Sec- prefix from Sec-Available-Dictionary - Raised by Martin Thomson",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/4",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "The Sec- prefix seems entirely unjustified.  Yes, JS that can inject the field into a fetch might spoil a response (see above), but that's already true.  I'd prefer not to include Sec- prefixes unless there is clear justification.\r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0102.html)\r\ncc: @martinthomson",
       "createdAt": "2023-08-18T16:37:10Z",
-      "updatedAt": "2023-08-18T17:50:26Z",
-      "closedAt": null,
+      "updatedAt": "2023-08-31T17:53:44Z",
+      "closedAt": "2023-08-31T17:53:44Z",
       "comments": [
         {
           "author": "pmeenan",
