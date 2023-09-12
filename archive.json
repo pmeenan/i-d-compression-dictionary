@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-09-10T00:40:09.345908+00:00",
+  "timestamp": "2023-09-12T00:36:29.954929+00:00",
   "repo": "pmeenan/i-d-compression-dictionary",
   "labels": [
     {
@@ -328,6 +328,22 @@
           "updatedAt": "2023-08-18T17:01:59Z"
         }
       ]
+    },
+    {
+      "number": 10,
+      "id": "I_kwDOJ1PnBs5wrFam",
+      "title": "Test - migrate",
+      "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/10",
+      "state": "OPEN",
+      "author": "pmeenan",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Test issue for Kamino issue cloning",
+      "createdAt": "2023-09-11T11:54:35Z",
+      "updatedAt": "2023-09-11T11:54:35Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": []
