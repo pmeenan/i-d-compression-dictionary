@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-09-19T00:38:32.259939+00:00",
+  "timestamp": "2023-09-21T00:37:53.907355+00:00",
   "repo": "pmeenan/i-d-compression-dictionary",
   "labels": [
     {
@@ -55,15 +55,15 @@
       "id": "I_kwDOJ1PnBs5unTr8",
       "title": "Wildcard matching",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "For what it's worth, I like Roy's idea of prefix+suffix matching in place of arbitrary wildcards.  Pattern matching is more expensive than simple prefix/suffix matches.\r\n\r\nAlso, \"*\" is a valid path character in HTTP.  Maybe that was unwise, but that's what RFC 3986 says.  Probably not a big deal (you can avoid using it if you plan to use this feature), but still.",
       "createdAt": "2023-08-17T22:45:12Z",
-      "updatedAt": "2023-08-29T18:43:18Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T20:05:08Z",
+      "closedAt": "2023-09-20T20:05:08Z",
       "comments": [
         {
           "author": "pmeenan",
@@ -92,6 +92,13 @@
           "body": "@royfielding Not sure that it helps any, but the server wouldn't be doing any path matching. It just provides the path string as a hint to the client for where the dictionary would be usable (doesn't need to be validated on the server side at request time - no harm if a resource outside of the path is compressed).\r\n\r\nI'll do some browsing over the next week or so and build up a library of URL patterns for static resources and \"similar\" HTML pages and see what things look like in the wild.",
           "createdAt": "2023-08-29T18:43:17Z",
           "updatedAt": "2023-08-29T18:43:17Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "Closing. Moved to httpwg repository ^",
+          "createdAt": "2023-09-20T20:05:08Z",
+          "updatedAt": "2023-09-20T20:05:08Z"
         }
       ]
     },
@@ -100,15 +107,15 @@
       "id": "I_kwDOJ1PnBs5ur1g7",
       "title": "Match URLs should not allow full URLs - Raised by Ilari Liusvaara",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Allowing absolute URLs in match is a footgun, since dictionaries are  restricted to same-origin. I don't think any of the usual URI  productions are suitable here.\r\n\r\nI think most suitable would be 'segment *( \"/\" segment )', where  segment is the production from RFC 3986.\r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023AprJun/0309.html)",
       "createdAt": "2023-08-18T16:26:49Z",
-      "updatedAt": "2023-08-18T16:29:01Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T20:02:03Z",
+      "closedAt": "2023-09-20T20:02:03Z",
       "comments": [
         {
           "author": "pmeenan",
@@ -116,6 +123,13 @@
           "body": "Even though the URLs must be same-origin, there's some benefit to allowing arbitrary URL formatting to allow for the clean use of relative URLs. They are all going to be expanded to absolute URLs anyway and it wouldn't break anything if someone chose to include the protocol and host parts (though there's no benefit to sending them).\r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023AprJun/0312.html)",
           "createdAt": "2023-08-18T16:29:01Z",
           "updatedAt": "2023-08-18T16:29:01Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "Closing. Moved to the httpwg repository ^",
+          "createdAt": "2023-09-20T20:02:03Z",
+          "updatedAt": "2023-09-20T20:02:03Z"
         }
       ]
     },
@@ -124,15 +138,15 @@
       "id": "I_kwDOJ1PnBs5ur3m5",
       "title": "Response should include dictionary used for encoding - raised by Martin Thomson",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/3",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "I don't understand how a client determines which dictionary was used by the server.  It seems like the response depends on the request, which is fragile (and doesn't allow clients to advertise multiple dictionaries, which seems likely with Use-As-Dictionary as it is).\r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0102.html)\r\ncc @martinthomson",
       "createdAt": "2023-08-18T16:34:40Z",
-      "updatedAt": "2023-08-18T16:35:33Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T19:49:41Z",
+      "closedAt": "2023-09-20T19:49:41Z",
       "comments": [
         {
           "author": "pmeenan",
@@ -140,6 +154,13 @@
           "body": "For identifying the dictionary, it's worth noting that the spec requires that the client advertise a SINGLE dictionary that it supports but yes, the response depends on the dictionary identified in the request. This also helps with minimizing the variants that caches would need to store since the response needs to be varied on the request's available dictionary (and multiple would explode the permutations).  It wouldn't hurt to echo the dictionary hash in the response which would allow for other mechanisms of advertising dictionaries but that also carries the cost of complicating the vary logic (would need to vary based on whatever request header was used to negotiate the dictionary that ended up being used).\r\n\r\n[Listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0104.html)",
           "createdAt": "2023-08-18T16:35:33Z",
           "updatedAt": "2023-08-18T16:35:33Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "Closing. Moved to httpwg repository ^",
+          "createdAt": "2023-09-20T19:49:41Z",
+          "updatedAt": "2023-09-20T19:49:41Z"
         }
       ]
     },
@@ -179,15 +200,15 @@
       "id": "I_kwDOJ1PnBs5ur42H",
       "title": "Split into two documents - Raised by Martin Thomson",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/5",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Would it be worth considering a split for Use-As-Dictionary?  Or do we just need more information?  I have far less confidence in that component myself.\r\n\r\nIf this all stays as experimental, a single document is fine.  However, if delta encoding ends up being a slam dunk and we need more information on Use-As-Dictionary, then it might be good to take delta encoding as a proposed standard and leave Use-As-Dictionary as an experiment.\r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0103.html)\r\ncc @martinthomson",
       "createdAt": "2023-08-18T16:39:12Z",
-      "updatedAt": "2023-08-18T16:40:12Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T19:53:43Z",
+      "closedAt": "2023-09-20T19:53:42Z",
       "comments": [
         {
           "author": "pmeenan",
@@ -195,6 +216,13 @@
           "body": "It could make sense since setting the dictionary in a response doesn't have to be the only way that client's populate available dictionaries but the dictionary selection is somewhat entangled with the subsequent request.\r\n\r\nThere's a good chance that fields will need to be added to Use-As-Dictionary (I just added \"type\", for example, to allow for forward-compatibility with non-raw dictionaries) but some of those changes will also cascade to the content encoding. Zstandard-specific or Brotli-specific dictionary formats, for example, would require new content encodings as well as some explanation for what to send in the Accept-Encoding when using format-specific dictionaries.\r\n\r\n[listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0104.html)",
           "createdAt": "2023-08-18T16:40:12Z",
           "updatedAt": "2023-08-18T16:40:12Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "Closing. Moved to httpwg repository ^",
+          "createdAt": "2023-09-20T19:53:43Z",
+          "updatedAt": "2023-09-20T19:53:43Z"
         }
       ]
     },
@@ -203,15 +231,15 @@
       "id": "I_kwDOJ1PnBs5ur520",
       "title": "Sould not use Content-encoding - Raised by Roy T. Fielding",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "I think implementation of such through content-codings is fundamentally misguided because it changes the resource itself and impacts all caching along the chain of requests in ways that are non-recoverable. That is due to the lost metadata and variance on whatever request field is used to indicate that some downstream client can grok some possible dictionary.\r\n\r\nIn short, it looks like an easy solution for a browser, but will wreak havoc with the larger architecture of the Web.\r\n\r\nThe right way to do this is to implement it as a transfer encoding that can be decoded without loss or confusion with the unencoded resource, which would require extending h2 and h3 to support that feature of HTTP/1.1.\r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0130.html)\r\ncc @royfielding",
       "createdAt": "2023-08-18T16:43:07Z",
-      "updatedAt": "2023-08-18T16:51:03Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T19:48:09Z",
+      "closedAt": "2023-09-20T19:48:08Z",
       "comments": [
         {
           "author": "pmeenan",
@@ -219,6 +247,13 @@
           "body": "The decoded version of the resource is unchanged. It's not fundamentally different than brotli which happens to include a default dictionary and the caching is guaranteed to be maintained in a consistent way as long as \"Vary\" works on \"Accept-Encoding\" as well as whatever header negotiates the dictionary.\r\n\r\nEven without the dictionary, if something in the middle doesn't know how to process one of the content-encodings (and needs to be able to access the content) then the accept-encoding should be modified to only include encodings that it knows how to work with.\r\n\r\nThis isn't really notably different than \"br\" or \"zstd\".\r\n\r\nMoving the compression down into the transport layer is what we tried before but failed to navigate the browser security issues because the transport layer doesn't have the context of which responses need to be opaque, which responses are partitioned across document or frame boundaries, etc and that the dictionary compression could be used to perform oracle attacks across those boundaries.\r\n\r\n[listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0131.html)",
           "createdAt": "2023-08-18T16:49:30Z",
           "updatedAt": "2023-08-18T16:51:03Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "Closing. Moved to httpwg repository ^",
+          "createdAt": "2023-09-20T19:48:08Z",
+          "updatedAt": "2023-09-20T19:48:08Z"
         }
       ]
     },
@@ -227,15 +262,15 @@
       "id": "I_kwDOJ1PnBs5ur6kC",
       "title": "CORS is inappropriate - Raised by Roy T. Fielding",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "For the existing draft, there is a lot of unnecessary confusion regarding features of fetch, like CORS, that don't make any sense from a security perspective. That's not what CORS is capable of covering, nor how it is implemented in practice, so reusing it doesn't make any sense. \r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0130.html)\r\ncc @royfielding",
       "createdAt": "2023-08-18T16:45:34Z",
-      "updatedAt": "2023-08-29T01:21:27Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T19:45:23Z",
+      "closedAt": "2023-09-20T19:45:23Z",
       "comments": [
         {
           "author": "pmeenan",
@@ -257,6 +292,13 @@
           "body": "The concern raised by the security team is that a client could abuse dictionary compression and a timing attack to expose the contents of a CORS-opaque response.  The contents themselves would already be prevented from being exposed directly but there's a theoretical risk that an origin serving private data through dictionary compression could expose that data unexpectedly in a cross-origin timing attack.\r\n\r\nI don't know enough about the practicality of timing-based oracle attacks using dictionary compression and the level of control that an attacker would need to have on either the payload of the response or the payload of the dictionary but in an abundance of caution we are recommending that servers avoid the problem entirely and don't use dictionaries in cross-origin opaque responses (even if it would be blocked from being processed in the client).",
           "createdAt": "2023-08-29T01:21:27Z",
           "updatedAt": "2023-08-29T01:21:27Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "Closing. Moved to httpwg repository ^",
+          "createdAt": "2023-09-20T19:45:23Z",
+          "updatedAt": "2023-09-20T19:45:23Z"
         }
       ]
     },
@@ -289,15 +331,15 @@
       "id": "I_kwDOJ1PnBs5ur9zF",
       "title": "Add dictionary URL to sec-available-dictionary requests - Raised by Vlad Krasnov",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/9",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "I think it would make the proposal easier to support from a CDN POV if the Sec-Available-Dictionary included the dictionary URL and Etag, otherwise it requires too much state keeping.\r\n\r\nGiven a URL and an Etag it is pretty easy to have a best effort dictionary compression.\r\n\r\n[Original listserv response](https://lists.w3.org/Archives/Public/ietf-http-wg/2023JulSep/0091.html)\r\ncc @vkrasnov",
       "createdAt": "2023-08-18T16:57:53Z",
-      "updatedAt": "2023-08-18T17:02:00Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T19:33:27Z",
+      "closedAt": "2023-09-20T19:33:27Z",
       "comments": [
         {
           "author": "pmeenan",
@@ -326,6 +368,13 @@
           "body": "I have a few concerns with making the URL available (for URL-delivered dictionaries).  It's possible we could add another optional header as a request hint but there's a risk of middle-boxes holding it wrong.\r\n\r\n* You would still need to verify that the hash of the dictionary matches the requested hash before using it. Re-calculating the hash on every access could be pretty expensive (feels like verifying the hash before writing would be hit less often).\r\n* The same URL could represent multiple dictionaries with different hashes (think a well-known URL like fb.js that does in-place upgrades).\r\n\r\nIndexing the entry by URL and hash could potentially solve the issues but could it not just as easily be indexed by the hash without the URL since the hash is the unique index?",
           "createdAt": "2023-08-18T17:01:59Z",
           "updatedAt": "2023-08-18T17:01:59Z"
+        },
+        {
+          "author": "pmeenan",
+          "authorAssociation": "OWNER",
+          "body": "Moved to httpwg repository ^",
+          "createdAt": "2023-09-20T19:33:27Z",
+          "updatedAt": "2023-09-20T19:33:27Z"
         }
       ]
     },
@@ -334,15 +383,15 @@
       "id": "I_kwDOJ1PnBs5wrFam",
       "title": "Test - migrate",
       "url": "https://github.com/pmeenan/i-d-compression-dictionary/issues/10",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "pmeenan",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Test issue for Kamino issue cloning",
       "createdAt": "2023-09-11T11:54:35Z",
-      "updatedAt": "2023-09-11T11:54:35Z",
-      "closedAt": null,
+      "updatedAt": "2023-09-20T19:28:06Z",
+      "closedAt": "2023-09-20T19:28:06Z",
       "comments": []
     }
   ],
